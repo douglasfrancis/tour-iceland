@@ -1,0 +1,30 @@
+.guide-card{
+    height: 450px;
+    width: 300px;
+    margin: 2rem;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: unset;
+
+}
+
+#guides{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.guide-img{
+    width: 95%;
+    height: 80%;
+    object-fit: cover;
+    object-position: center;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: 3px;
+
+}

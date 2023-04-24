@@ -1,0 +1,13 @@
+footer{
+    background-color: #2E3440;
+    display: flex;
+    flex-wrap: wrap;
+    height: 200px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+}
+
+footer > *{
+    color: #ECEFF4
+}
