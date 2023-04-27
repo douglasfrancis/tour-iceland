@@ -35,6 +35,9 @@
     width: 200px;
     font-weight: bold;
 }
+#home-btn:hover{
+  cursor: pointer;
+}
 
 
 .scroll-down-arrow {

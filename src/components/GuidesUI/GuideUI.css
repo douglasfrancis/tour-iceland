@@ -1,0 +1,30 @@
+#guide-nav{
+    height: 100px;
+    width: 100vw;
+    background-color: #3B4252;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+}
+
+.guide-nav-link{
+    color: #ECEFF4;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 1rem;
+}
+
+#logout-btn{
+    background-color:#8FBCBB;
+    color: white;
+    border-radius: 5px;
+    height: 40px;
+    width: 150px;
+    font-weight: bold;
+    border: 1px solid #8FBCBB;
+}
+
+#logout-btn:hover{
+    cursor: pointer;
+}

@@ -1,12 +1,12 @@
 import React from 'react'
 import './Home.css'
 import TourCard from './TourCard'
-import lava from '../Images/lava.jpg'
-import whale from '../Images/whale.jpg'
-import whales from '../Images/whales.png'
-import golden from '../Images/golden.png'
-import waterfall from '../Images/waterfall.jpg'
-import fireice from '../Images/fireice.png'
+import lava from '../../Images/lava.jpg'
+import whale from '../../Images/whale.jpg'
+import whales from '../../Images/whales.png'
+import golden from '../../Images/golden.png'
+import waterfall from '../../Images/waterfall.jpg'
+import fireice from '../../Images/fireice.png'
 
 
 export default function MostPopular() {

@@ -1,6 +1,7 @@
 #most-popular-container{
     min-height: 200px;
     background-color: #2E3440;
+    text-align: center;
 }
 
 #most-popular-container h2{

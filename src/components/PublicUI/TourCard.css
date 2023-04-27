@@ -22,6 +22,8 @@
     height: 100%;
     z-index: 998;
     background: rgba(46,52,64, 0.5);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
 
 }
 

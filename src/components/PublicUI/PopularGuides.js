@@ -1,10 +1,10 @@
 import React from 'react'
 import GuideCard from './GuideCard'
 import './PopularGuides.css'
-import Guide1 from '../Images/guide1.jpg'
-import Guide2 from '../Images/guide2.jpg'
-import Guide3 from '../Images/guide3.jpg'
-import Simon from '../Images/simon.jpeg'
+import Guide1 from '../../Images/guide1.jpg'
+import Guide2 from '../../Images/guide2.jpg'
+import Guide3 from '../../Images/guide3.jpg'
+import Simon from '../../Images/simon.jpeg'
 
 export default function PopularGuides() {
   return (

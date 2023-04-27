@@ -1,0 +1,57 @@
+#find-nav{
+    width: 100vw;
+    height: 70px;
+    background-color: #3B4252;
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+    align-items: center;
+    position: absolute;
+    top: 0;
+}
+
+#find-page{
+   background-color:#ECEFF4;
+   min-height:80vh;
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: space-evenly;
+   align-items: center;
+   padding: 100px 2rem;
+
+}
+
+#find-logo{
+    height: 50px
+}
+
+#request-btn{
+    background-color: #8FBCBB;
+    color: white;
+    border: 1px solid #8FBCBB;
+    border-radius: 3px;
+    height: 40px;
+    width: 150px;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+#request-btn:hover{
+    cursor: pointer;
+}
+
+#request-date{
+    height: 50px;
+    margin-left: 2rem;
+    background-color: unset;
+    padding: 10px;
+    border: 1px solid grey;
+    border-radius: 3px;
+}
+
+.find-nav-link{
+    color: #ECEFF4;
+    margin: 0 1rem;
+    text-decoration: none;
+    font-weight: bold;
+}
