@@ -35,7 +35,7 @@ export default function Find() {
       toast.error("Please add all required fields")
     } else{
       setLoading(true)
-      let payload = {title: "Request", date: moment(date).format("YYYY-MM-DD"), name, email, info: {applicant, lookingFor, tourType, groupSize}, notes, backgroundColor:'##D08770' , borderColor:'##D08770', textColor:'#fff'}
+      let payload = {title: "Request", date: moment(date).format("YYYY-MM-DD"), name, email, info: {applicant, lookingFor, tourType, groupSize}, notes, backgroundColor:'#D08770' , borderColor:'#D08770', textColor:'#fff'}
       console.log(payload)
       axios.post(`${process.env.REACT_APP_API}/create-new-request`, payload)
       .then(()=>{
