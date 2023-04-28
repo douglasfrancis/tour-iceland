@@ -29,7 +29,7 @@ export default function GuideUI() {
 
           <button id='logout-btn' onClick={handleLogout}>Logout</button>
       </nav>
-      <main>
+      <main >
         <Outlet />
       </main>
     </div>

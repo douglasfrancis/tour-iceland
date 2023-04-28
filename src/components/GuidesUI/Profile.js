@@ -4,7 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import PersonalTab from './PersonalTab';
+import PersonalTab from './Tabs/PersonalTab';
 
 export default function Profile() {
 
@@ -15,7 +15,7 @@ export default function Profile() {
   };
 
   return (
-    <div>
+    <div style={{backgroundColor:'#f8f9fb'}}>
 
     <Box sx={{ width: '100%', p:2 }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

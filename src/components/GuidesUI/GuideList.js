@@ -65,7 +65,7 @@ export default function GuideList() {
   }
 
   return (
-    <div style={{textAlign:'center'}}>
+    <div style={{textAlign:'center', backgroundColor:'#f8f9fb', height: '100vh'}}>
          <Button sx={{backgroundColor: '#8FBCBB', color:'white', margin: '2rem auto'}} variant='contained' onClick={handleOpen}>Add New Guide</Button>
       <Modal
         open={open}
