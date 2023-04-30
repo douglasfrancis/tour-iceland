@@ -15,7 +15,7 @@ export default function VideoHome() {
           <img id='home-logo' src={logo}/>
           <Link to='/find'><button id='home-btn'>Find a guide</button></Link>
 
-          <a href="" class="scroll-down-link scroll-down-arrow" data-iconfont="ETmodules" data-icon>
+          <a href="" className="scroll-down-link scroll-down-arrow" data-iconfont="ETmodules" data-icon>
           </a>
         </div>
 

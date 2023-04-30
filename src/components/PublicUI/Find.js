@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -16,6 +16,7 @@ import logo from '../../Images/iceland-logo-white.png'
 import moment from 'moment'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import Divider from '@mui/material/Divider';
 
 export default function Find() {
 
@@ -29,13 +30,19 @@ export default function Find() {
   const [notes, setNotes ] = useState("")
   const [loading, setLoading ] = useState(false)
   const [sent, setSent ] = useState(false)
+  const [currency, setCurrency ] = useState("")
+  const [currencies, setCurrencies ] = useState([])
+
+  useEffect(()=>{
+    getCurrencies()
+  },[])
 
   const handleSubmit = () =>{
-    if(!applicant || !lookingFor || !date){
+    if(!applicant || !lookingFor || !date || !currency){
       toast.error("Please add all required fields")
     } else{
       setLoading(true)
-      let payload = {title: "Request", date: moment(date).format("YYYY-MM-DD"), name, email, info: {applicant, lookingFor, tourType, groupSize}, notes, backgroundColor:'#D08770' , borderColor:'#D08770', textColor:'#fff'}
+      let payload = {title: "Request", date: moment(date).format("YYYY-MM-DD"), name, email, info: {applicant, lookingFor, tourType, groupSize}, notes, currency, backgroundColor:'#D08770' , borderColor:'#D08770', textColor:'#fff'}
       console.log(payload)
       axios.post(`${process.env.REACT_APP_API}/create-new-request`, payload)
       .then(()=>{
@@ -45,6 +52,16 @@ export default function Find() {
       })
       .catch((e)=>{console.log(e);setLoading(false)})
     }
+  }
+
+  const getCurrencies = () =>{
+    axios.get('https://openexchangerates.org/api/currencies.json')
+    .then((res)=>{
+      setCurrencies(res.data)
+    })
+    .catch((e)=>{
+      console.log(e)
+    });
   }
 
   return (
@@ -105,10 +122,33 @@ export default function Find() {
         </FormControl>
         </div>
         
-        <div style={{margin: '1rem 0'}}>
+        <div style={{margin: '1rem 0', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap'}}>
           <label>Date of tour</label>
           <input id='request-date' type='date' value={date} onChange={(e)=>setDate(e.target.value)}/>
+
+          <FormControl sx={{width:200}}>
+            <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={currency}
+              label="Currency"
+              onChange={(e)=>setCurrency(e.target.value)}
+            >
+              <MenuItem value={'USD'}>USD - United States Dollar</MenuItem>
+              <MenuItem value={'GBP'}>GBP - British Pound Sterling</MenuItem>
+              <MenuItem value={'EUR'}>EUR - Euro</MenuItem>
+              <MenuItem value={'CNY'}>CNY - Chinese Yuan</MenuItem>
+              <Divider />
+
+              {Object.keys(currencies).map((value, i)=>{
+                return <MenuItem key={i} value={value}>{value} - {Object.values(currencies)[i]}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
         </div>
+
+       
 
         <div style={{display:'flex', justifyContent:'space-between'}}>
         <TextField sx={{my:1, width:285}}   label='Name' value={name} onChange={(e)=>setName(e.target.value)}/>
@@ -127,6 +167,9 @@ export default function Find() {
           >
             <MenuItem value={"Golden Circle"}>Golden Circle</MenuItem>
             <MenuItem value={"Lagoons"}>Lagoons</MenuItem>
+            <MenuItem value={"Silfra Diving"}>Silfra Diving</MenuItem>
+            <MenuItem value={"Whale Watching"}>Whale Watching</MenuItem>
+            <MenuItem value={"Helicopter tour"}>Helicopter tour</MenuItem>
             <MenuItem value={"Custom"}>Custom</MenuItem>
           </Select>
         </FormControl>
