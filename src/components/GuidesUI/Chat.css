@@ -1,0 +1,65 @@
+#chat-page{
+    min-height: 90vh;
+    padding: 2rem;
+    width: 100vw;
+    background-color: #ECEFF4;
+}
+
+#msg-box{
+    height: 200px;
+    width: 98%;
+    max-width: 800px;
+    margin: 2rem auto;
+  
+
+}
+
+.guide-msg{
+    background-color: #8FBCBB;
+    padding: 1rem;
+    width: 500px;
+    max-width: 90vw;
+    border-radius: 3px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.client-msg{
+    background-color: #fff;
+    padding: 1rem;
+    width: 500px;
+    max-width: 90vw;
+    border-radius: 3px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.timestamp{
+    color: #CDCDCD;
+}
+
+#message-container{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+#send-btn{
+    background-color: #8FBCBB;
+    color: white;
+    font-weight: bold;
+    padding: 1rem;
+    border: unset;
+    border-radius: 3px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    width: 100px;
+
+}
+
+#send-btn:hover{
+    cursor: pointer;
+}

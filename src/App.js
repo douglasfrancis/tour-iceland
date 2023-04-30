@@ -15,15 +15,18 @@ import PublicUI from './components/PublicUI/PublicUI';
 import GuideList from './components/GuidesUI/GuideList';
 import RequestList from './components/GuidesUI/RequestList';
 import Request from './components/GuidesUI/Request';
+import Inbox from './components/GuidesUI/Inbox';
+import { InboxProvider} from './components/context/InboxContext'
+import Chat from './components/GuidesUI/Chat';
 
 function App() {
   return (
     
     <AuthProvider>
+    <InboxProvider>
     <ToastContainer position='top-center' />
     <BrowserRouter>
       <Routes>
-
         <Route path='/' element={<Landing />} />
         <Route path='/login' element={<Login />} />
         <Route path='/reset-password' element={<ResetPassword />} />
@@ -39,12 +42,14 @@ function App() {
             <Route path='/guides/list' element={<GuideList />} />
             <Route path='/guides/requests' element={<RequestList />} />
             <Route path='/guides/requests/:id' element={<Request />} />
+            <Route path='/guides/inbox' element={<Inbox />} />
+            <Route path='/guides/inbox/:id' element={<Chat />} />
 
           </Route>
         </Route>
-
       </Routes>
     </BrowserRouter>
+  </InboxProvider>
   </AuthProvider>
      
    

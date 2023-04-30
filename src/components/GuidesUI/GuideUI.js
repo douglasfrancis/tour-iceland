@@ -4,7 +4,12 @@ import './GuideUI.css'
 import {  signOut } from "firebase/auth";
 import { auth } from '../../Firebase'
 import logo from '../../Images/iceland-logo-white.png'
+import Badge from '@mui/material/Badge';
+import {useInbox} from '../context/InboxContext';
+
 export default function GuideUI() {
+
+  let { unread } = useInbox()
 
   const handleLogout = () =>{
     signOut(auth).then(() => {
@@ -26,7 +31,15 @@ export default function GuideUI() {
             <Link className='guide-nav-link' to='/guides/profile'>Profile</Link>
             <Link className='guide-nav-link' to='/guides/list'>Guides</Link>
             <Link className='guide-nav-link' to='/guides/requests'>Requests</Link>
+            <Badge badgeContent={unread.length} color='primary'>
+              <Link className='guide-nav-link' to='/guides/inbox'>Inbox</Link>
+            </Badge>
+
+           
+
           </div>
+
+       
 
           <button id='logout-btn' onClick={handleLogout}>Logout</button>
       </nav>

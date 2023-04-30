@@ -10,9 +10,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import moment from 'moment'
+import { toast} from 'react-toastify'
+import { useAuth } from '../Auth/AuthContext'
 
 export default function Request() {
-
+    let { currentUser} = useAuth()
     let { id } = useParams()
     const [guide, setGuide] = useState(0)
     const [car, setCar] = useState(0)
@@ -22,35 +24,51 @@ export default function Request() {
     const [own, setOwn] = useState(0)
     const [vat, setVAT] = useState(1.11)
     const [msg, setMsg] = useState("")
+    const [guideName, setGuideName] = useState("")
+    const [guideEmail, setGuideEmail] = useState("")
 
     const [request, setRequest] = useState("")
 
     useEffect(()=>{
         getRequest()
+        getGuideInfo()
     },[])
 
     const getRequest = () =>{
         axios.post(`${process.env.REACT_APP_API}/get-request-by-id`, {id})
         .then((res)=>{
             setRequest(res.data)
-          console.log(res.data)
+          console.log('Request',res.data)
         })
         .catch((e)=>console.log(e))
     }
+
+    const getGuideInfo = () =>{
+        axios.post(`${process.env.REACT_APP_API}/get-guide-by-id`, {id: currentUser.uid})
+          .then((res)=>{
+            let {firstName, lastName, email} = res.data
+            setGuideName(`${firstName} ${lastName}`);setGuideEmail(email);
+          })
+          .catch((e)=>console.log(e))
+      }
+    
     let total = (guide*1)+(car*1)+(fuel*1)+(food*1)+(accomodation*1)+(own*1)
+    let gross = Math.round(total*vat)
 
-   
 
 
-    const getConversion = () =>{
-        
-        axios.get(`https://openexchangerates.org/api/latest.json`, {params:{app_id: process.env.REACT_APP_EXCHANGE_APP_ID}})
-        .then((res)=>{
-            console.log(res.date)
-        })
-        .catch((e)=>{
-            console.log(e)
-        })
+    const sendQuote = () =>{
+        if(!total) {
+            toast.error("Please create a quote")
+        } else {
+            axios.post(`${process.env.REACT_APP_API}/send-initial-quote`, 
+            {guideId: currentUser.uid, guideName, guideEmail, net: total, vat, msg, clientEmail: request.email, clientName: request.name, requestId: request._id})
+            .then((res)=>{
+              toast.success(res.data)
+            })
+            .catch((e)=>toast.error(e))
+        }
+       
     }
 
 
@@ -87,11 +105,11 @@ export default function Request() {
                     <FormControlLabel value={1.24} control={<Radio />} label="24%" />
                 </RadioGroup>
                 </FormControl>
-            <TextField sx={{my:1}} fullWidth  label='Gross total' value={Math.round(total*vat)} disabled InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }}/>
+            <TextField sx={{my:1}} fullWidth  label='Gross total' value={gross} disabled InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }}/>
             <p>Our platform fee is passed on to the client ensuring the guide always receives what they deserve.</p>
 
-            <TextField multiline rows={5} fullWidth sx={{my:1}} label='Message' />
-            <Button variant='contained' sx={{backgroundColor: '#8FBCBB'}}>Send</Button>
+            <TextField multiline rows={5} fullWidth sx={{my:1}} label='Message' value={msg} onChange={(e)=>setMsg(e.target.value)}/>
+            <Button onClick={sendQuote} variant='contained' sx={{backgroundColor: '#8FBCBB'}}>Send</Button>
 
 
         </div>

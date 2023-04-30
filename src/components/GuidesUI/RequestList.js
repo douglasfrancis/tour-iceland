@@ -22,7 +22,6 @@ export default function RequestList() {
 
   return (
     <div>
-        {console.log(requests)}
         <h1>Requests</h1>
         <table>
             <thead>
