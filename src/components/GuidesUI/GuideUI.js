@@ -25,6 +25,7 @@ export default function GuideUI() {
             <Link className='guide-nav-link' to='/guides'>Calendar</Link>
             <Link className='guide-nav-link' to='/guides/profile'>Profile</Link>
             <Link className='guide-nav-link' to='/guides/list'>Guides</Link>
+            <Link className='guide-nav-link' to='/guides/requests'>Requests</Link>
           </div>
 
           <button id='logout-btn' onClick={handleLogout}>Logout</button>

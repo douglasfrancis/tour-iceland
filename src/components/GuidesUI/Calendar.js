@@ -18,6 +18,7 @@ import { toast } from 'react-toastify'
 import { useAuth} from '../Auth/AuthContext'
 import axios from 'axios'
 import ViewBooking from './ViewBooking';
+import { useNavigate} from 'react-router-dom'
 
 export default function Calendar() {
 
@@ -26,7 +27,7 @@ export default function Calendar() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   let { currentUser} = useAuth()
-
+  let navigate = useNavigate()
   const [title, setTitle] = useState("")
   const [date, setDate] = useState("")
   const [type, setType] = useState("")
@@ -98,8 +99,13 @@ export default function Calendar() {
         eventSources={[bookings, requests]}
         eventClick={function(info){
           console.log(info)
-          setEvent(info.event)
-          setView(true)
+          if(info.event.title === "Request"){
+              navigate(`/guides/requests/${info.event.extendedProps._id}`)
+          } else {
+            setEvent(info.event)
+            setView(true)
+          }
+          
         }}
       />
 

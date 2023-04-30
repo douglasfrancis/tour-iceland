@@ -13,6 +13,8 @@ import Profile from './components/GuidesUI/Profile';
 import Find from './components/PublicUI/Find';
 import PublicUI from './components/PublicUI/PublicUI';
 import GuideList from './components/GuidesUI/GuideList';
+import RequestList from './components/GuidesUI/RequestList';
+import Request from './components/GuidesUI/Request';
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
             <Route index element={<Calendar />} />
             <Route path='/guides/profile' element={<Profile />} />
             <Route path='/guides/list' element={<GuideList />} />
+            <Route path='/guides/requests' element={<RequestList />} />
+            <Route path='/guides/requests/:id' element={<Request />} />
 
           </Route>
         </Route>
