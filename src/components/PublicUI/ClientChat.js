@@ -1,14 +1,11 @@
 import React, { useEffect, useState} from 'react'
 import { useParams } from 'react-router-dom'
-import './Chat.css'
 import axios from 'axios'
 import moment from 'moment'
 import { useAuth} from '../Auth/AuthContext'
 
-export default function Chat() {
-
+export default function ClientChat() {
     let { id } = useParams()
-    let { currentUser } = useAuth()
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState("")
     const [chat, setChat] = useState("")
@@ -40,7 +37,7 @@ export default function Chat() {
         if(!message){
             return
         } else{
-            axios.post(`${process.env.REACT_APP_API}/send-guide-message`, {chatId: id, clientEmail: chat.clientEmail, message, guideId: currentUser.uid, read: true, timeStamp: new Date(), sentBy: "Guide"})
+            axios.post(`${process.env.REACT_APP_API}/send-client-message`, {chatId: id, guideEmail: chat.guideEmail, message, guideId: chat.guideId, read: false, timeStamp: new Date(), sentBy: "Client"})
             .then((res)=>{
                 setMessage("")
               getMessages()
@@ -50,25 +47,24 @@ export default function Chat() {
         }
        
     }
-
   return (
     <div id='chat-page'>
-        {messages.map((msg, i)=>{
-            let lineBreaks = msg.message.split('.')
-            return <div key={i} className={msg.sentBy === "Guide" ? 'guide-msg' : 'client-msg'}>
-                    {lineBreaks.map((line, i)=>{
-                        return  <p key={i}>{line}</p>
-                    })}
-                   
-                    <p className='timestamp'>{moment(msg.timeStamp).format('HH:mm A, DD MMM')}</p>
-                </div>
-        })}
+    {messages.map((msg, i)=>{
+        let lineBreaks = msg.message.split('.')
+        return <div key={i} className={msg.sentBy === "Guide" ? 'guide-msg' : 'client-msg'}>
+                {lineBreaks.map((line, i)=>{
+                    return  <p key={i}>{line}</p>
+                })}
+               
+                <p className='timestamp'>{moment(msg.timeStamp).format('HH:mm A, DD MMM')}</p>
+            </div>
+    })}
 
-        <div id='message-container' >
-        <input id='msg-box' value={message} onChange={(e)=>setMessage(e.target.value)}/>
-            <button id='send-btn' onClick={sendMessage}>Send</button>
-        </div>
-        
+    <div id='message-container' >
+    <input id='msg-box' value={message} onChange={(e)=>setMessage(e.target.value)}/>
+        <button id='send-btn' onClick={sendMessage}>Send</button>
     </div>
+    
+</div>
   )
 }

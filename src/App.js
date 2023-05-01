@@ -18,6 +18,8 @@ import Request from './components/GuidesUI/Request';
 import Inbox from './components/GuidesUI/Inbox';
 import { InboxProvider} from './components/context/InboxContext'
 import Chat from './components/GuidesUI/Chat';
+import ClientInbox from './components/PublicUI/ClientInbox';
+import ClientChat from './components/PublicUI/ClientChat';
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
     <ToastContainer position='top-center' />
     <BrowserRouter>
       <Routes>
+         {/*Public routes */}
         <Route path='/' element={<Landing />} />
         <Route path='/login' element={<Login />} />
         <Route path='/reset-password' element={<ResetPassword />} />
@@ -35,6 +38,12 @@ function App() {
             <Route index element={<Find />} />
         </Route>
 
+        {/*Client Auth routes */}
+        <Route path='/public/inbox' element={<ClientInbox />} />
+        <Route path='/public/inbox/:id' element={<ClientChat />} />
+       
+
+        {/*Guides Auth routes */}
         <Route element={<RequireAuth  />} >
           <Route path='/guides' element={<GuideUI />}>
             <Route index element={<Calendar />} />

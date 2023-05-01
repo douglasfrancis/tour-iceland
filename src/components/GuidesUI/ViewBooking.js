@@ -47,7 +47,6 @@ export default function ViewBooking({event, view, setView}) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-            {console.log(event)}
 
           <TextField fullWidth sx={{my:1}} label='Booking Title eg. Golden Cirlce' value={title} onChange={(e)=>setTitle(e.target.value)}/>
 
