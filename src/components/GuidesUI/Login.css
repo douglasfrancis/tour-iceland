@@ -1,5 +1,6 @@
 #login-page{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100vw;
@@ -40,4 +41,9 @@
     height: 50px;
     width: 250px;
     padding: 1rem;
+}
+
+#login-logo{
+    width: 300px;
+    margin-bottom: 2rem;
 }

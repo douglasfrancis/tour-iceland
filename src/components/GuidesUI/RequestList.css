@@ -1,0 +1,38 @@
+#request-list-page{
+    min-height: 90vh;
+    background-color: #ECEFF4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#request-list-table{
+    width: 1300px;
+    margin: 0 auto;
+    max-width: 95vw;
+    border-collapse:collapse
+}
+
+#request-list-table tr:hover{
+    cursor: pointer;
+}
+
+#request-list-page > *{
+    color: #434C5E;
+}
+
+#request-list-table th{
+    text-align: left;
+}
+
+#thead-tr{
+    border-bottom: 1px solid #434C5E;
+}
+
+#request-list-table td{
+    padding: 1rem;
+}   
+
+#request-list-table tr:nth-child(even) {
+    background: #E5E9F0;
+  }

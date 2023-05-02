@@ -5,11 +5,10 @@
     height: calc(100vh - 220px)
 }
 
-#guide-img{
-    width: 100px;
-    height: 100px;
+#profile-guide-img{
+    width: 150px;
+    height: 125px;
     margin: 2rem auto;
-    border-radius: 50%;
     object-fit: cover;
     object-position: center;
 }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect} from 'react'
-import { Link } from 'react-router-dom'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -11,8 +10,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { TextField } from '@mui/material';
 import './Find.css'
-import SendIcon from '@mui/icons-material/Send';
-import logo from '../../Images/iceland-logo-white.png'
 import moment from 'moment'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -66,24 +63,7 @@ export default function Find() {
 
   return (
     <div id='find-page' >
-      <nav id='find-nav'>
-        <Link to='/'>
-          <img id='find-logo' src={logo}/>
-        </Link>
-
-        <div>
-          <Link className='find-nav-link'>Guides</Link>
-          <Link className='find-nav-link'>Companies</Link>
-          <Link className='find-nav-link'>Tours</Link>
-        </div>
-        
-
-        <Link to='/find' style={{display:'flex', justifyContent:'center', alignItems:"center"}}>
-          <SendIcon sx={{color:'#fff'}} />
-          <p className='find-nav-link'>Post tour request</p>
-        </Link>
-
-      </nav>
+      
 
 
       <div style={{width:600}}>

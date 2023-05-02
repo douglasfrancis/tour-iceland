@@ -1,0 +1,7 @@
+#find-guide-page{
+    min-height: 90vh;
+    padding: 100px 2rem;
+    background-color: #ECEFF4;
+    display: flex;
+    flex-wrap: wrap;
+}

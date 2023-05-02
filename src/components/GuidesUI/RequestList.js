@@ -2,6 +2,8 @@ import React, { useState, useEffect} from 'react'
 import axios from 'axios'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
+import './RequestList.css'
+
 export default function RequestList() {
 
     let navigate = useNavigate()
@@ -21,11 +23,11 @@ export default function RequestList() {
       }
 
   return (
-    <div>
-        <h1>Requests</h1>
-        <table>
+    <div id='request-list-page'>
+        <h2>Available tour requests</h2>
+        <table id='request-list-table'>
             <thead>
-                <tr>
+                <tr id='thead-tr'>
                     <th>Name</th>
                     <th>Date</th>
                     <th>Tour Type</th>

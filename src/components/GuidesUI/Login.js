@@ -4,6 +4,7 @@ import { Link, useNavigate} from 'react-router-dom'
 import {  signInWithEmailAndPassword } from "firebase/auth";
 import { toast } from 'react-toastify'
 import { auth } from '../../Firebase'
+import logo from '../../Images/iceland-logo.png'
 
 export default function Login() {
 
@@ -32,6 +33,7 @@ export default function Login() {
 
   return (
     <div id='login-page'>
+      <img id='login-logo' src={logo}/>
       <div id='credentials-container'>
         <input className='login-input' placeholder='Email' value={email} onChange={(e)=>setEmail(e.target.value)}/>
         <input className='login-input' type='password' placeholder='Password' value={password} onChange={(e)=>setPassword(e.target.value)}/>

@@ -20,6 +20,8 @@ import { InboxProvider} from './components/context/InboxContext'
 import Chat from './components/GuidesUI/Chat';
 import ClientInbox from './components/PublicUI/ClientInbox';
 import ClientChat from './components/PublicUI/ClientChat';
+import FindGuides from './components/PublicUI/Guides/FindGuides';
+import GuideProfile from './components/PublicUI/Guides/GuideProfile';
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
         
         <Route path='/find' element={<PublicUI />}>
             <Route index element={<Find />} />
+            <Route path='/find/guides' element={<FindGuides />} />
+            <Route path='/find/guides/:id' element={<GuideProfile />} />
         </Route>
 
         {/*Client Auth routes */}
