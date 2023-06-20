@@ -2,7 +2,6 @@ import React, { useEffect, useState} from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
-import { useAuth} from '../Auth/AuthContext'
 
 export default function ClientChat() {
     let { id } = useParams()
@@ -53,7 +52,43 @@ export default function ClientChat() {
         let lineBreaks = msg.message.split('.')
         return <div key={i} className={msg.sentBy === "Guide" ? 'guide-msg' : 'client-msg'}>
                 {lineBreaks.map((line, i)=>{
-                    return  <p key={i}>{line}</p>
+                    const regex = /Quote - ([a-fA-F0-9]{24}) - (.*)/;  
+                    const match = line.match(regex);
+                    if (match) {
+                        const quoteId = match[1];
+                        const myLines = String(line).split("\n");
+                        const paymentURL = `http://localhost:3000/quote/${quoteId}`;
+
+                        return (
+                            <p key={i}> 
+                                <a href={paymentURL} target="_blank" rel="noopener noreferrer">
+                                    View Quote
+                                </a>
+                                <br />
+                                Message - <br />
+                                
+                                {myLines.map((line, index) => {
+                                const match = line.match(regex);
+
+                                if (match) {
+                                    return (
+                                    <React.Fragment key={index}>
+                                        {match[2]} <br />
+                                    </React.Fragment>
+                                    );
+                                } else {
+                                    return (
+                                    <React.Fragment key={index}>
+                                        {line} <br />
+                                    </React.Fragment>
+                                    );
+                                }
+                                })}
+                            </p>
+                        )
+                    } else {
+                        return <p key={i}>{line}</p>;
+                    }
                 })}
                
                 <p className='timestamp'>{moment(msg.timeStamp).format('HH:mm A, DD MMM')}</p>
@@ -61,8 +96,8 @@ export default function ClientChat() {
     })}
 
     <div id='message-container' >
-    <input id='msg-box' value={message} onChange={(e)=>setMessage(e.target.value)}/>
-        <button id='send-btn' onClick={sendMessage}>Send</button>
+        <textarea id='msg-box' value={message} onChange={(e) => setMessage(e.target.value)} />
+        <button id='send-btn' onClick={sendMessage}>Send to guide</button>
     </div>
     
 </div>
