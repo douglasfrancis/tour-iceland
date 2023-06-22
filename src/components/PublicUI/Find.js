@@ -35,7 +35,7 @@ export default function Find() {
   },[])
 
   const handleSubmit = () =>{
-    if(!applicant || !lookingFor || !date || !currency){
+    if (!applicant || !lookingFor || !date || !currency) {
       toast.error("Please add all required fields")
     } else{
       setLoading(true)
@@ -51,7 +51,7 @@ export default function Find() {
     }
   }
 
-  const getCurrencies = () =>{
+  const getCurrencies = () => {
     axios.get('https://openexchangerates.org/api/currencies.json')
     .then((res)=>{
       setCurrencies(res.data)

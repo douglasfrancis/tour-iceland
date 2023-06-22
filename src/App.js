@@ -16,12 +16,14 @@ import GuideList from './components/GuidesUI/GuideList';
 import RequestList from './components/GuidesUI/RequestList';
 import Request from './components/GuidesUI/Request';
 import Inbox from './components/GuidesUI/Inbox';
-import { InboxProvider} from './components/context/InboxContext'
+import { InboxProvider } from './components/context/InboxContext'
 import Chat from './components/GuidesUI/Chat';
 import ClientInbox from './components/PublicUI/ClientInbox';
 import ClientChat from './components/PublicUI/ClientChat';
 import FindGuides from './components/PublicUI/Guides/FindGuides';
 import GuideProfile from './components/PublicUI/Guides/GuideProfile';
+import Quote from './components/PublicUI/Quote';
+import Cancel from "./components/PublicUI/CancelPayment"; 
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/reset-password' element={<ResetPassword />} />
         
+        <Route path='/quote/:id' element={<Quote />} />
+
         <Route path='/find' element={<PublicUI />}>
             <Route index element={<Find />} />
             <Route path='/find/guides' element={<FindGuides />} />
@@ -44,8 +48,12 @@ function App() {
 
         {/*Client Auth routes */}
         <Route path='/public/inbox' element={<ClientInbox />} />
-        <Route path='/public/inbox/:id' element={<ClientChat />} />
+        <Route path='/public/inbox/client/:id' element={<ClientChat />} />
+        <Route path='/public/inbox/guide/:id' element={<Chat />} />
        
+        {/* Payment routes */}
+        <Route path="/payments/success/:id" element={<Quote />} /> 
+        <Route path="/payments/cancel" element={<Cancel />} /> 
 
         {/*Guides Auth routes */}
         <Route element={<RequireAuth  />} >

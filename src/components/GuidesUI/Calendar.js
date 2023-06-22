@@ -99,13 +99,12 @@ export default function Calendar() {
         eventSources={[bookings, requests]}
         eventClick={function(info){
           console.log(info)
-          if(info.event.title === "Request"){
+          if (info.event.title === "Request") {
               navigate(`/guides/requests/${info.event.extendedProps._id}`)
           } else {
             setEvent(info.event)
             setView(true)
           }
-          
         }}
       />
 

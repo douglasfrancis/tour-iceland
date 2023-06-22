@@ -36,7 +36,7 @@ export default function RequestList() {
             </thead>
             <tbody>
                 {requests.map((request, i)=>{
-                    return <tr key={i} onClick={()=>navigate(`/guides/requests/${request._id}`)}>
+                    return <tr key={i} onClick={()=>navigate(`/guides/requests/${request._id}`)} style={{ cursor: 'pointer' }}>
                         <td>{request.name}</td>
                         <td>{moment(request.date).format('ddd, DD MMM YYYY')}</td>
                         <td>{request.info.tourType}</td>
