@@ -14,18 +14,24 @@ import { toast} from 'react-toastify'
 import { useAuth } from '../Auth/AuthContext'
 
 export default function Request() {
+    const vatRateLow = 1.11
+    const vatRateHigh = 1.24
+    const tourGoferCommission = 1.125
     let { currentUser} = useAuth()
     let { id } = useParams()
+    let customerGross
+    const [quoteId, setQuoteId] = useState(null)
     const [guide, setGuide] = useState(0)
     const [car, setCar] = useState(0)
     const [fuel, setFuel] = useState(0)
     const [food, setFood] = useState(0)
-    const [accomodation, setAccomodation] = useState(0)
+    const [accommodation, setAccommodation] = useState(0)
     const [own, setOwn] = useState(0)
-    const [vat, setVAT] = useState(1.11)
+    const [vat, setVat] = useState(vatRateLow)
     const [msg, setMsg] = useState("")
     const [guideName, setGuideName] = useState("")
     const [guideEmail, setGuideEmail] = useState("")
+    const [date, setDate] = useState("")
 
     const [request, setRequest] = useState("")
 
@@ -34,16 +40,23 @@ export default function Request() {
         getGuideInfo()
     },[])
 
-    const getRequest = () =>{
+    
+    useEffect(()=>{
+        if ((currentUser.uid) && (request._id))
+            getQuote()
+    },[currentUser.uid, request._id])
+
+
+    const getRequest = () => {
         axios.post(`${process.env.REACT_APP_API}/get-request-by-id`, {id})
         .then((res)=>{
             setRequest(res.data)
-          console.log('Request',res.data)
+            console.log('Request',res.data)
         })
         .catch((e)=>console.log(e))
     }
 
-    const getGuideInfo = () =>{
+    const getGuideInfo = () => {
         axios.post(`${process.env.REACT_APP_API}/get-guide-by-id`, {id: currentUser.uid})
           .then((res)=>{
             let {firstName, lastName, email} = res.data
@@ -51,8 +64,28 @@ export default function Request() {
           })
           .catch((e)=>console.log(e))
       }
+
+    const getQuote = () => {
+        axios.post(`${process.env.REACT_APP_API}/get-guide-quote-for-request`, {guideId: currentUser.uid, requestId: request._id})
+        .then((res)=>{
+            if (res.data) {
+                setQuoteId(res.data._id ?? null)
+                setGuide(res.data.guideFee ?? 0)
+                setCar(res.data.carFee ?? 0)
+                setFuel(res.data.fuelFee ?? 0)
+                setFood(res.data.foodFee ?? 0)
+                setAccommodation(res.data.accommodationFee ?? 0)
+                setOwn(res.data.ownFee ?? 0)
+                setVat(res.data.vatRate ?? vatRateLow)
+                setMsg(res.data.message ?? "")
+            }
+        })
+        .catch((e) => {
+            console.log(e)
+        })
+    }
     
-    let total = (guide*1)+(car*1)+(fuel*1)+(food*1)+(accomodation*1)+(own*1)
+    let total = (guide*1)+(car*1)+(fuel*1)+(food*1)+(accommodation*1)+(own*1)
     let gross = Math.round(total*vat)
 
 
@@ -61,16 +94,45 @@ export default function Request() {
         if(!total) {
             toast.error("Please create a quote")
         } else {
-            axios.post(`${process.env.REACT_APP_API}/send-initial-quote`, 
-            {guideId: currentUser.uid, guideName, guideEmail, net: total, vat, msg, clientEmail: request.email, clientName: request.name, requestId: request._id})
+            // if no previous quote then the quoteId will be undefined and this will form a create
+            // if update then potentially we are overwriting existing values with the same ones
+            // since all are always applied
+            let quotePayload = {
+                quoteId,
+                guideId: currentUser.uid, 
+                requestId: request._id,
+                guideFee: guide, 
+                carFee: car, 
+                fuelFee: fuel,
+                foodFee: food,
+                accommodationFee: accommodation,
+                ownFee: own,
+                vatRate: vat,
+                customerGross: gross * tourGoferCommission,
+                hasPaid: false,
+                message: msg,
+                updatedAt: new Date()
+            }
+
+            let requestPayload = {
+                guideId: currentUser.uid, 
+                guideName, 
+                guideEmail, 
+                net: total, 
+                vat, 
+                msg, 
+                clientEmail: request.email,
+                clientName: request.name,
+                requestId: request._id
+            }
+
+            axios.post(`${process.env.REACT_APP_API}/send-initial-quote`, { requestPayload, quotePayload } )
             .then((res)=>{
-              toast.success(res.data)
+                toast.success(res.data)
             })
             .catch((e)=>toast.error(e))
         }
-       
     }
-
 
   return (
     <div style={{display:'flex', flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', flexWrap:'wrap'}}>
@@ -91,18 +153,18 @@ export default function Request() {
             <TextField sx={{m:1, width:'46%'}}  label='Car fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={car} onChange={(e)=>setCar(e.target.value)}/>
             <TextField sx={{m:1, width:'46%'}}  label='Fuel fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={fuel} onChange={(e)=>setFuel(e.target.value)}/>
             <TextField sx={{m:1, width:'46%'}}  label='Food fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={food} onChange={(e)=>setFood(e.target.value)}/>
-            <TextField sx={{m:1, width:'46%'}}  label='Accomodation fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={accomodation} onChange={(e)=>setAccomodation(e.target.value)}/>
+            <TextField sx={{m:1, width:'46%'}}  label='Accommodation fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={accommodation} onChange={(e)=>setAccommodation(e.target.value)}/>
             <TextField sx={{m:1, width:'46%'}}  label='Own company fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={own} onChange={(e)=>setOwn(e.target.value)}/>
             <TextField sx={{m:1, width:'95%'}}  size='small' label='Net total' value={total} disabled InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }}/>
             <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">VAT</FormLabel>
-                <RadioGroup value={vat} onChange={(e)=>setVAT(e.target.value)}
+                <RadioGroup value={vat} onChange={(e)=>setVat(e.target.value)}
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
                     name="row-radio-buttons-group"
                 >
-                    <FormControlLabel value={1.11} control={<Radio />} label="11%" />
-                    <FormControlLabel value={1.24} control={<Radio />} label="24%" />
+                    <FormControlLabel value={vatRateLow} control={<Radio />} label="11%" />
+                    <FormControlLabel value={vatRateHigh} control={<Radio />} label="24%" />
                 </RadioGroup>
                 </FormControl>
             <TextField sx={{my:1}} fullWidth  label='Gross total' value={gross} disabled InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }}/>

@@ -5,6 +5,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { useAuth} from '../Auth/AuthContext'
 
+// guide side chat, i.e. for messages from guide to client
 export default function Chat() {
 
     let { id } = useParams()
@@ -37,12 +38,12 @@ export default function Chat() {
     }
 
     const sendMessage = () =>{
-        if(!message){
+        if (!message){
             return
         } else{
             axios.post(`${process.env.REACT_APP_API}/send-guide-message`, {chatId: id, clientEmail: chat.clientEmail, message, guideId: currentUser.uid, read: true, timeStamp: new Date(), sentBy: "Guide"})
             .then((res)=>{
-                setMessage("")
+              setMessage("")
               getMessages()
               console.log(res.data)
             })
@@ -56,17 +57,14 @@ export default function Chat() {
         {messages.map((msg, i)=>{
             let lineBreaks = msg.message.split('.')
             return <div key={i} className={msg.sentBy === "Guide" ? 'guide-msg' : 'client-msg'}>
-                    {lineBreaks.map((line, i)=>{
-                        return  <p key={i}>{line}</p>
-                    })}
-                   
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{msg.message}</p>
                     <p className='timestamp'>{moment(msg.timeStamp).format('HH:mm A, DD MMM')}</p>
                 </div>
         })}
 
         <div id='message-container' >
-        <input id='msg-box' value={message} onChange={(e)=>setMessage(e.target.value)}/>
-            <button id='send-btn' onClick={sendMessage}>Send</button>
+            <textarea id='msg-box' value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button id='send-btn' onClick={sendMessage}>Send to client</button>
         </div>
         
     </div>
