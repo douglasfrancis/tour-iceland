@@ -13,10 +13,17 @@ import moment from 'moment'
 import { toast} from 'react-toastify'
 import { useAuth } from '../Auth/AuthContext'
 
+
+// Description:
+//   Page allows a guide to provide a quote in response to a client's request
+//   Can also be revisited to update a previously supplied quote
+//   Once a quote has been accepted (paid) this page will reflect that, no further
+//   updates are permitted
+
 export default function Request() {
     const vatRateLow = 1.11
     const vatRateHigh = 1.24
-    const tourGoferCommission = 1.125
+    const appCommission = 1.125
     let { currentUser} = useAuth()
     let { id } = useParams()
     let customerGross
@@ -28,10 +35,10 @@ export default function Request() {
     const [accommodation, setAccommodation] = useState(0)
     const [own, setOwn] = useState(0)
     const [vat, setVat] = useState(vatRateLow)
+    const [hasPaid, setHasPaid] = useState(false)
     const [msg, setMsg] = useState("")
     const [guideName, setGuideName] = useState("")
     const [guideEmail, setGuideEmail] = useState("")
-    const [date, setDate] = useState("")
 
     const [request, setRequest] = useState("")
 
@@ -40,7 +47,7 @@ export default function Request() {
         getGuideInfo()
     },[])
 
-    
+
     useEffect(()=>{
         if ((currentUser.uid) && (request._id))
             getQuote()
@@ -78,13 +85,14 @@ export default function Request() {
                 setOwn(res.data.ownFee ?? 0)
                 setVat(res.data.vatRate ?? vatRateLow)
                 setMsg(res.data.message ?? "")
+                setHasPaid(res.data.hasPaid ?? "")
             }
         })
         .catch((e) => {
             console.log(e)
         })
     }
-    
+
     let total = (guide*1)+(car*1)+(fuel*1)+(food*1)+(accommodation*1)+(own*1)
     let gross = Math.round(total*vat)
 
@@ -99,28 +107,28 @@ export default function Request() {
             // since all are always applied
             let quotePayload = {
                 quoteId,
-                guideId: currentUser.uid, 
+                guideId: currentUser.uid,
                 requestId: request._id,
-                guideFee: guide, 
-                carFee: car, 
+                guideFee: guide,
+                carFee: car,
                 fuelFee: fuel,
                 foodFee: food,
                 accommodationFee: accommodation,
                 ownFee: own,
                 vatRate: vat,
-                customerGross: gross * tourGoferCommission,
+                customerGross: gross * appCommission,
                 hasPaid: false,
                 message: msg,
                 updatedAt: new Date()
             }
 
             let requestPayload = {
-                guideId: currentUser.uid, 
-                guideName, 
-                guideEmail, 
-                net: total, 
-                vat, 
-                msg, 
+                guideId: currentUser.uid,
+                guideName,
+                guideEmail,
+                net: total,
+                vat,
+                msg,
                 clientEmail: request.email,
                 clientName: request.name,
                 requestId: request._id
@@ -129,54 +137,86 @@ export default function Request() {
             axios.post(`${process.env.REACT_APP_API}/send-initial-quote`, { requestPayload, quotePayload } )
             .then((res)=>{
                 toast.success(res.data)
+                clearForm()
             })
-            .catch((e)=>toast.error(e))
+            .catch((e) => toast.error(e))
         }
     }
 
-  return (
-    <div style={{display:'flex', flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', flexWrap:'wrap'}}>
-        <div style={{display:'flex', flexDirection: 'column'}}>
-            <h2>Tour details</h2>
-            <p>Client name - {request && request.name}</p>
-            <p>Date of tour - {moment(request.date).format('ddd, DD MMM YYYY')}</p>
-            <p>No. of days - number of days</p>
-            <p>Tour requested - {request && request.info.tourType}</p>
-            <p>Public/Private - {request && request.info.lookingFor}</p>
+    const clearForm = () => {
+        setGuide(0)
+        setCar(0)
+        setFuel(0)
+        setFood(0)
+        setAccommodation(0)
+        setOwn(0)
+        setVat(vatRateLow)
+        setMsg("")
+    }
 
-            <p>Notes- {request.notes}</p>
+    // there's some complexity here:
+    //   - if a quote has been made then display 'amend'
+    //   - if a quote has not been made then display 'create'
+    //   - if a quote has been paid then state that it is no longer changeable
+    //   - if a request has been paid or if it was only ever directed to a single guide
+    //     then the guide Id should be present in the request. If another guide manages
+    //     to land here then safeguard by providing a message that the request is covered
+    return (
+        <div style={{display:'flex', flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', flexWrap:'wrap'}}>
+            <div style={{display:'flex', flexDirection: 'column'}}>
+                <h2>Tour details</h2>
+                <p>Client name - {request && request.name}</p>
+                <p>Date of tour - {moment(request.date).format('ddd, DD MMM YYYY')}</p>
+                <p>No. of days - number of days</p>
+                <p>Tour requested - {request && request.info.tourType}</p>
+                <p>Public/Private - {request && request.info.lookingFor}</p>
+                <p>Notes- {request.notes}</p>
+            </div>
 
+            <div style={{width: 500, textAlign:'center', maxWidth:'95vw'}}>
+                {(request.guideId && currentUser.uid !== request.guideId) ? (
+                    <div>
+                        <h2>This request has been accepted by another guide</h2>
+                </div>
+            ) : (
+                <div>
+                    {!hasPaid ? (
+                        <>
+                            <h2>{!quoteId ? 'Create' : 'Amend'} Quote</h2>
+                        </>
+                    ) : (
+                        <>
+                            <h2>Your quote has been accepted and paid</h2>
+                            <p>(no further changes possible)</p>
+                        </>
+                    )}
+                    <TextField sx={{m:1, width:'46%'}}  label='Guide fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={guide} onChange={(e)=>setGuide(e.target.value)}/>
+                    <TextField sx={{m:1, width:'46%'}}  label='Car fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={car} onChange={(e)=>setCar(e.target.value)}/>
+                    <TextField sx={{m:1, width:'46%'}}  label='Fuel fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={fuel} onChange={(e)=>setFuel(e.target.value)}/>
+                    <TextField sx={{m:1, width:'46%'}}  label='Food fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={food} onChange={(e)=>setFood(e.target.value)}/>
+                    <TextField sx={{m:1, width:'46%'}}  label='Accommodation fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={accommodation} onChange={(e)=>setAccommodation(e.target.value)}/>
+                    <TextField sx={{m:1, width:'46%'}}  label='Own company fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={own} onChange={(e)=>setOwn(e.target.value)}/>
+                    <TextField sx={{m:1, width:'95%'}}  size='small' label='Net total' value={total} disabled InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }}/>
+                    <FormControl>
+                        <FormLabel id="demo-row-radio-buttons-group-label">VAT</FormLabel>
+                        <RadioGroup value={vat} onChange={(e)=>setVat(e.target.value)}
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="row-radio-buttons-group"
+                        >
+                            <FormControlLabel value={vatRateLow} control={<Radio />} label="11%" />
+                            <FormControlLabel value={vatRateHigh} control={<Radio />} label="24%" />
+                        </RadioGroup>
+                    </FormControl>
+                    <TextField sx={{my:1}} fullWidth  label='Gross total' value={gross} disabled InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }}/>
+                    <p>Clients will not see the breakdown of costs.</p>
+                    <p>Our platform fee is passed on to the client ensuring the guide always receives what they deserve.</p>
+
+                    <TextField multiline rows={5} fullWidth sx={{my:1}} label='Message' value={msg} onChange={(e)=>setMsg(e.target.value)}/>
+                    <Button onClick={sendQuote} variant='contained' sx={{backgroundColor: '#8FBCBB'}}>Send</Button>
+
+                </div>)
+            }
         </div>
-        <div style={{width: 500, textAlign:'center', maxWidth:'95vw'}}>
-            <h2>Create Quote</h2>
-            <TextField sx={{m:1, width:'46%'}}  label='Guide fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={guide} onChange={(e)=>setGuide(e.target.value)}/>
-            <TextField sx={{m:1, width:'46%'}}  label='Car fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={car} onChange={(e)=>setCar(e.target.value)}/>
-            <TextField sx={{m:1, width:'46%'}}  label='Fuel fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={fuel} onChange={(e)=>setFuel(e.target.value)}/>
-            <TextField sx={{m:1, width:'46%'}}  label='Food fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={food} onChange={(e)=>setFood(e.target.value)}/>
-            <TextField sx={{m:1, width:'46%'}}  label='Accommodation fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={accommodation} onChange={(e)=>setAccommodation(e.target.value)}/>
-            <TextField sx={{m:1, width:'46%'}}  label='Own company fee' size='small' InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }} value={own} onChange={(e)=>setOwn(e.target.value)}/>
-            <TextField sx={{m:1, width:'95%'}}  size='small' label='Net total' value={total} disabled InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }}/>
-            <FormControl>
-                <FormLabel id="demo-row-radio-buttons-group-label">VAT</FormLabel>
-                <RadioGroup value={vat} onChange={(e)=>setVat(e.target.value)}
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="row-radio-buttons-group"
-                >
-                    <FormControlLabel value={vatRateLow} control={<Radio />} label="11%" />
-                    <FormControlLabel value={vatRateHigh} control={<Radio />} label="24%" />
-                </RadioGroup>
-                </FormControl>
-            <TextField sx={{my:1}} fullWidth  label='Gross total' value={gross} disabled InputProps={{startAdornment: <InputAdornment position="start">kr</InputAdornment> }}/>
-            <p>Our platform fee is passed on to the client ensuring the guide always receives what they deserve.</p>
-
-            <TextField multiline rows={5} fullWidth sx={{my:1}} label='Message' value={msg} onChange={(e)=>setMsg(e.target.value)}/>
-            <Button onClick={sendQuote} variant='contained' sx={{backgroundColor: '#8FBCBB'}}>Send</Button>
-
-
-        </div>
-        
-        
-    </div>
-  )
+    </div>)
 }
